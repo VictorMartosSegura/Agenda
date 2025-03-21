@@ -12,6 +12,7 @@ public class Persona {
         this.phone = phone;
         this.email = email;
     }
+
     public int getID(){ return id; }
     public String getName(){ return name; }
     public String getSurname(){ return surname; }
@@ -23,11 +24,11 @@ public class Persona {
     public void setPhone(long phone) { this.phone = phone; }
     public void setEmail(String email) { this.email = email; }
 
-    void Contact(){
-        System.out.println("ID: "+getID()+"\n   " +
+    public String toString(){
+        return "ID: "+getID()+"\n   " +
                 "Name: "+ getName()+"\n   " +
                 "Surname: "+ getSurname()+"\n   " +
                 "Phone: "+ getPhone()+"\n   " +
-                "Email: "+ getEmail()+"\n");
+                "Email: "+ getEmail()+"\n";
     }
 }

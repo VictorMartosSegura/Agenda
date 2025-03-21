@@ -1,95 +1,94 @@
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        sc.useLocale(Locale.ENGLISH);
 
         boolean exit=true;
-        Agenda newContact = new Agenda();
+        TUI tui = new TUI();
+        Agenda a = new Agenda();
         Persona p;
 
         while (exit) {
-            System.out.println("Hellcome to the agenda, please choose an option:");
-            System.out.println("   1. Create a new contact.");
-            System.out.println("   2. Search for existing contacts.");
-            System.out.println("   3. Update an existing contacts.");
-            System.out.println("   4. Delete an existing contacts.");
-            System.out.println("   5. Exit");
-
-            switch (sc.nextLine()) {
-                case "1":
-                    newContact.createContact(sc);
+            switch (tui.showMainMenu()) {
+                case 1:
+                    String[] data = tui.requestDataNewContact();
+                    tui.showMessage("\nNew contact created:");
+                    tui.showMessage(a.createContact(data).toString());
                     break;
-                case "2":
-                    System.out.println();
-                    System.out.println("Search menu, please choose an option:\n   " +
-                            "1. Search all.\n   " +
-                            "2. Search by name.\n   " +
-                            "3. Search by surname.\n   " +
-                            "4. Search by phone.\n   " +
-                            "5. Search by email.\n   " +
-                            "6. Back");
-                    switch (sc.nextLine()){
-                        case "1":
-                            System.out.println();
-                            newContact.searchByAll();
+                case 2:
+                    switch (tui.showSearchMenu()){
+                        case 1:
+                            tui.showByAll(a.searchByAll());
                             break;
-                        case "2":
-                            System.out.println();
-                            p=newContact.searchContactByName(sc);
-
-                            if(p!= null) p.Contact();
-                            else System.out.println("Contact not found.\n");
-
+                        case 2:
+                            ArrayList <Persona> names;
+                            names = a.searchContactByName(tui.requestSearchData("name"));
+                            if (!names.isEmpty()) {
+                                for (Persona persona : names) {
+                                    tui.showMessage(persona.toString());
+                                }
+                            } else {
+                                tui.showMessage("Contact not found.\n");
+                            }
                             break;
-                        case "3":
-                            System.out.println();
-                            p=newContact.searchContactBySurname(sc);
-
-                            if(p!= null) p.Contact();
-                            else System.out.println("Contact not found.\n");
-
+                        case 3:
+                            ArrayList <Persona> surnames;
+                            surnames = a.searchContactBySurname(tui.requestSearchData("surname"));
+                            if (!surnames.isEmpty()) {
+                                for (Persona persona : surnames) {
+                                    tui.showMessage(persona.toString());
+                                }
+                            } else {
+                                tui.showMessage("Contact not found.\n");
+                            }
                             break;
-                        case "4":
-                            System.out.println();
-                            p=newContact.searchContactByPhone(sc);
-
-                            if(p!= null) p.Contact();
-                            else System.out.println("Contact not found.\n");
-
+                        case 4:
+                            ArrayList <Persona> phones;
+                            phones = a.searchContactByPhone(Long.parseLong(tui.requestSearchData("phone")));
+                            if (!phones.isEmpty()) {
+                                for (Persona persona : phones) {
+                                    tui.showMessage(persona.toString());
+                                }
+                            } else {
+                                tui.showMessage("Contact not found.\n");
+                            }
                             break;
-                        case "5":
-                            System.out.println();
-                            p=newContact.searchContactByEmail(sc);
-
-                            if(p!= null) p.Contact();
-                            else System.out.println("Contact not found.\n");
-
+                        case 5:
+                            ArrayList <Persona> emails;
+                            emails = a.searchContactByEmail(tui.requestSearchData("email"));
+                            if (!emails.isEmpty()) {
+                                for (Persona persona : emails) {
+                                    tui.showMessage(persona.toString());
+                                }
+                            } else {
+                                tui.showMessage("Contact not found.\n");
+                            }
                             break;
-                        case "6": System.out.println();//Back
+                        case 6:
                             break;
-                        default: System.out.println("Invalid option.\n");
+                        default: tui.showMessage("Invalid option.\n");
                             break;
                     }
                     break;
-                case "3":
-                    System.out.println();
-                    p = newContact.updateContact(sc);
-                    if (p == null) System.out.println("Contact not found. Please check the ID.\n");
-
+                case 3:
+                    p = a.updateContact(tui.requestDataUpdate());
+                    if (p != null) {
+                        tui.showMessage("Contact Update:\n");
+                        tui.showMessage(p.toString());
+                    } else {
+                        tui.showMessage("Contact not found.\n");
+                    }
                     break;
-                case "4":
-                    System.out.println();
-                    newContact.deleteContact(sc);
+                case 4:
+                    a.deleteContact(tui.requestDataDelete());
+                    tui.showMessage("Contact Delete");
                     break;
-                case "5":
-                    System.out.println("You have closed the agenda.");
+                case 5:
+                    tui.showMessage("You have closed the agenda.");
                     exit=false;
                     break;
                 default:
-                    System.out.println("Invalid option.\n");
+                    tui.showMessage("Invalid option.\n");
                     break;
             }
         }

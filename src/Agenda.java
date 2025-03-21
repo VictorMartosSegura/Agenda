@@ -1,126 +1,103 @@
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Agenda {
-    Persona[] contacts= new Persona[100];
-    int index=1;
-    public void createContact(Scanner sc){
-        System.out.println("Please, write the contact's name:");
-        String name = sc.nextLine();
-        System.out.println("Please, write the contact's surname:");
-        String surname = sc.nextLine();
-        System.out.println("Please, write the contact's phone:");
-        long phone = sc.nextLong(); sc.nextLine();
-        System.out.println("Please, write the contact's email:");
-        String email = sc.nextLine();
+    private ArrayList<Persona> contacts;
+    private int lastContactId = 1;
 
-        Persona p = new Persona(index, name, surname, phone, email);
-        contacts[index-1] = p;
-        System.out.println("\nNew contact created:");
-        contacts[index-1].Contact();
-        index++;
+    public Agenda() {
+        contacts = new ArrayList<>();
     }
-    public void searchByAll() {
-        if (index == 1) {
-            System.out.println("The agenda is empty. Create a new contact.\n");
-            return;
-        }
-        System.out.println("Contacts in the agenda:");
-        for (int i = 0; i < index - 1; i++) if (contacts[i] != null) contacts[i].Contact();
-    }
-    public Persona searchContactByName(Scanner sc){
-        System.out.println("Please, write the contact's name to search:");
-        String name = sc.nextLine();
-        System.out.println();
-        int i=0;
-        while (i<index){
-            if(contacts[i].getName().equals(name)) {
-                return contacts[i];
-            }
-            i++;
-        }
-        return null;
-    }
-    public Persona searchContactBySurname(Scanner sc){
-        System.out.println("Please, write the contact's surname to search:");
-        String surname = sc.nextLine();
-        System.out.println();
-        int i=0;
-        while (i<index){
-            if(contacts[i].getSurname().equals(surname)) {
-                return contacts[i];
-            }
-            i++;
-        }
-        return null;
-    }
-    public Persona searchContactByPhone(Scanner sc){
-        System.out.println("Please, write the contact's phone to search:");
-        long phone = sc.nextInt(); sc.nextLine();
-        System.out.println();
-        int i=0;
-        while (i<index){
-            if(contacts[i].getPhone()==phone) {
-                return contacts[i];
-            }
-            i++;
-        }
-        return null;
-    }
-    public Persona searchContactByEmail(Scanner sc){
-        System.out.println("Please, write the contact's name to search:");
-        String email = sc.nextLine();
-        System.out.println();
-        int i=0;
-        while (i<index){
-            if(contacts[i].getName().equals(email)) {
-                return contacts[i];
-            }
-            i++;
-        }
-        return null;
-    }
-    public Persona updateContact(Scanner sc) {
-        System.out.println("Please, write the contact's ID:");
-        int id = sc.nextInt(); sc.nextLine();
-        System.out.println();
-        for (int i = 0; i < index - 1; i++) {
-            if (contacts[i] != null && contacts[i].getID() == id) {
 
-                System.out.println("Please, write the contact's name:");
-                String newName = sc.nextLine();
-                System.out.println("Please, write the contact's surname:");
-                String newSurname = sc.nextLine();
-                System.out.println("Please, write the contact's phone:");
-                long newPhone = sc.nextLong(); sc.nextLine();
-                System.out.println("Please, write the contact's email:");
-                String newEmail = sc.nextLine();
+    public ArrayList<Persona> getContacts() {
+        return contacts;
+    }
 
-                contacts[i].setName(newName);
-                contacts[i].setSurname(newSurname);
-                contacts[i].setPhone(newPhone);
-                contacts[i].setEmail(newEmail);
+    public void setContacts(ArrayList<Persona> contacts) {
+        this.contacts = contacts;
+    }
 
-                System.out.println("Existing contact updated:");
-                contacts[i].Contact();
-                return contacts[i];
+    public int getLastContactId() {
+        return lastContactId;
+    }
+
+    public void setLastContactId(int lastContactId) {
+        this.lastContactId = lastContactId;
+    }
+
+    public Persona createContact(String[] data){
+        Persona p = new Persona(lastContactId, data[0], data[1], Long.parseLong(data[2]), data[3]);
+        contacts.add(p);
+        lastContactId++;
+        return p;
+
+    }
+    public List<Persona> searchByAll() {
+        return contacts;
+    }
+    public ArrayList<Persona> searchContactByName(String searchName){
+        ArrayList<Persona> names = new ArrayList<>();
+        for (Persona p : contacts) {
+            if (p.getName().equals(searchName)) {
+                names.add(p);
+
+            }
+        }
+        return names;
+    }
+    public ArrayList<Persona> searchContactBySurname(String searchSurname){
+        ArrayList<Persona> surnames = new ArrayList<>();
+        for (Persona p : contacts) {
+            if (p.getSurname().equals(searchSurname)) {
+                surnames.add(p);
+
+            }
+        }
+        return surnames;
+    }
+    public ArrayList<Persona> searchContactByPhone(Long searchPhones){
+        ArrayList<Persona> phones = new ArrayList<>();
+        for (Persona p : contacts) {
+            if (p.getPhone() == searchPhones) {
+                phones.add(p);
+
+            }
+        }
+        return phones;
+    }
+    public ArrayList<Persona> searchContactByEmail(String searchEmail){
+        ArrayList<Persona> emails = new ArrayList<>();
+        for (Persona p : contacts) {
+            if (p.getEmail().equals(searchEmail)) {
+                emails.add(p);
+
+            }
+        }
+        return emails;
+    }
+    public Persona updateContact(Object[] setData) {
+        int id = (Integer) setData[0];
+        for (int i = 0; i < contacts.size(); i++) {
+            Persona p = contacts.get(i);
+            if (p.getID() == id) {
+                p.setName((String) setData[1]);
+                p.setSurname((String) setData[2]);
+                p.setPhone((Long) setData[3]);
+                p.setEmail((String) setData[4]);
+
+                return p;
             }
         }
         return null;
+
     }
-    public void deleteContact(Scanner sc) {
-        System.out.println("Please, write the contact's ID:");
-        int id = sc.nextInt(); sc.nextLine();
-        System.out.println();
-        boolean found = false;
-        for (int i = 0; i < index - 1; i++) {
-            if (contacts[i] != null && contacts[i].getID() == id) {
-                contacts[i] = null;
-                System.out.println("Contact with ID " + id + " has been deleted.\n");
-                found = true;
+    public void deleteContact(int idDelete) {
+        for (int i = 0; i < contacts.size(); i++) {
+            if (contacts.get(i).getID() == idDelete) {
+                contacts.remove(i);
                 break;
             }
         }
-        if (!found) System.out.println("Contact not found. Please check the ID.\n");
 
     }
 
